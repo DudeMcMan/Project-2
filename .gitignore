@@ -1,0 +1,16 @@
+# compiled programs and object files
+*.o
+*.out
+*.exe
+a.out
+campus
+app
+build/
+bin/
+
+# editor and IDE files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
