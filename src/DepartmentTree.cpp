@@ -9,12 +9,6 @@
 
 using namespace std;
 
-// Gets just the file name out of a path so warnings read nicely.
-static string baseName(const string& path) {
-    string::size_type pos = path.find_last_of("/\\");
-    return pos == string::npos ? path : path.substr(pos + 1);
-}
-
 DepartmentTree::DepartmentTree() : root(nullptr), count(0) {}
 
 // Frees every node, children first.
@@ -95,11 +89,10 @@ bool DepartmentTree::addDepartment(const string& rawName, const string& rawParen
 void DepartmentTree::loadFromFile(const string& path, int& accepted, int& rejected) {
     accepted = 0;
     rejected = 0;
-    string fname = baseName(path);
 
     ifstream in(path.c_str());
     if (!in.is_open()) {
-        cout << "Error: could not open " << fname << ". Treating it as empty." << endl;
+        cout << "ERROR: Could not open file: " << path << endl;
         return;
     }
 
@@ -140,7 +133,7 @@ void DepartmentTree::loadFromFile(const string& path, int& accepted, int& reject
             ++accepted;
         } else {
             ++rejected;
-            cout << "Warning: " << fname << " line " << lineNo << ": " << reason << endl;
+            cout << "WARNING: " << path << " line " << lineNo << ": " << reason << endl;
         }
     }
 }
