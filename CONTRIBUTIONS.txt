@@ -1,0 +1,38 @@
+CONTRIBUTIONS
+=============
+Project 2: Smart Campus Navigation and Facility Analytics System
+
+Ryker
+  Owned modules:
+    DepartmentTree / DepartmentNode (include/DepartmentTree.h,
+      src/DepartmentTree.cpp): general tree, department file loader,
+      search, hierarchy display, preorder traversal.
+    Utils (include/Utils.h): trim, case conversion, field splitting and
+      facility ID validation used by the loaders.
+    main.cpp: startup, loading all four files, the menu loop and input
+      validation.
+    tests/test_tree.cpp, testdata/ and test_results.txt.
+    README.txt, design_document.txt, .gitignore, and the integration branch.
+
+Mason
+  Owned modules:
+    CampusGraph (include/CampusGraph.h, src/CampusGraph.cpp): building and
+      connection loaders, adjacency list graph, graph display, statistics,
+      breadth first search.
+    data/buildings.txt and data/connections.txt.
+
+Owen
+  Owned modules:
+    Facilities, FacilitiesHashTable and FacilitiesManager (include/ and src/
+      files with those names): facility record, custom hash table with
+      separate chaining, collision counting, facility loader, display and
+      search by ID.
+    data/facilities.txt.
+
+Shared work
+  Reviewing each other's code against the Milestone 1 requirements.
+  Merging all three branches into the integration branch and fixing the
+  compile warnings found when the pieces were put together.
+  Testing the combined program on CELL.
+  Agreeing on the shared loader conventions (WARNING / ERROR messages and
+  the "Load Summary" line printed for each file).
