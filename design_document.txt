@@ -1,0 +1,68 @@
+DESIGN DOCUMENT
+Smart Campus Navigation and Facility Analytics System (Milestone 1)
+
+HASH TABLE (facilities)
+-----------------------
+Facilities are stored in our own hash table, FacilitiesHashTable, keyed by
+facility ID. To hash a key we uppercase it, add up the ASCII values of its
+characters, and take the sum mod the capacity:
+
+    index = (sum of ASCII codes of uppercase(key)) % capacity
+
+For example, "F001" is 70 + 48 + 48 + 49 = 215, and 215 % 11 = 6. Because we
+uppercase first, f001 and F001 count as the same ID.
+
+The capacity starts at 11 and does not resize in this milestone.
+
+Collisions are handled with separate chaining. Each bucket is a vector that
+holds the positions of every facility that hashed there. We picked chaining
+because the table can never fill up, so there is no maximum number of
+facilities to worry about, and inserting is simple.
+
+A collision is counted when an accepted insert goes into a bucket that
+already has something in it. Duplicate IDs are caught and rejected before
+this, so they never change the collision count. F001, F010 and F100 all land
+in bucket 6, so loading those three gives 2 collisions.
+
+CAMPUS GRAPH (buildings)
+------------------------
+CampusGraph is an undirected graph stored as an adjacency list: one list of
+neighbors per building, in the order the connections were loaded. Every
+connection is added to both buildings. We used a list instead of a matrix
+because a campus map is sparse, so a list takes much less space and BFS only
+has to look at real neighbors.
+
+Connections with an unknown building, a duplicate, or a bad format are
+rejected with a warning that shows the file name and line number.
+
+BFS uses a queue and marks a building as visited when it is queued, so
+nothing is queued twice. It prints each building with its distance from the
+start and ends with "Reachable Count: X out of N", which tells you if part of
+the campus can't be reached.
+
+DEPARTMENT TREE
+---------------
+DepartmentTree is a general tree. Each DepartmentNode has a vector of
+children and a pointer to its parent. The first valid department must have
+the parent NONE and becomes the root. Unknown parents, duplicate names, a
+second NONE, and badly formatted lines are rejected with a warning.
+
+The hierarchy display indents 4 spaces per level, and the preorder list
+visits a department before its children. The destructor frees every node.
+
+CLASSES
+-------
+  Facilities           one facility record
+  FacilitiesHashTable  the custom hash table
+  FacilitiesManager    loads facilities.txt, checks the building exists,
+                       and handles display and search
+  CampusGraph          buildings, connections, statistics, BFS
+  DepartmentNode       one department
+  DepartmentTree       the tree and its file loader
+  Utils                small string helpers shared by the loaders
+  main.cpp             loads the files, prints a Load Summary for each,
+                       and runs the menu
+
+Every loader prints WARNING lines for bad records, an ERROR if a file can't
+be opened, and a line like "Load Summary: <file> | Accepted: N | Rejected: M".
+Windows (CRLF) line endings are handled by trimming the carriage return.
