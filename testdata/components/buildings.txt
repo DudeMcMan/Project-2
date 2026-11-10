@@ -1,0 +1,6 @@
+# two separate groups plus one isolated building
+Library
+Gym
+Lab
+Cafe
+Shed

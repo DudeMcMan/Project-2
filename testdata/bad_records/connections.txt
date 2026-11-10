@@ -1,0 +1,9 @@
+Library|Student Union
+Student Union|Library
+library|Science Building
+Library|Library
+Library|Nowhere
+Gym
+A|B|C
+ Student Union | Gym 
+|Gym

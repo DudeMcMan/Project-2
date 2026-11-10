@@ -1,0 +1,5 @@
+# collision test: F001, F010 and f100 all hash to bucket 6 (capacity 11); last line is a duplicate ID
+F001|Front Desk|Library|Service
+F010|Info Desk|Library|Service
+f100|Help Desk|Library|Service
+F001|Duplicate of first|Library|Service
