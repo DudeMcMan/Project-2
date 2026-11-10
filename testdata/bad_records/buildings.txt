@@ -1,0 +1,9 @@
+# comment line
+Library
+
+Student Union
+library
+Science Building
+Gym
+Observatory
+   # indented comment

@@ -1,0 +1,12 @@
+F001|Main Reading Room|Library|Library
+f001|Dup lowercase id|Library|Library
+F002|Lab|Science Building|Computer Lab
+F003|X|Atlantis|Lab
+004|Bad id|Gym|Rec
+F005||Gym|Rec
+F006|Name|Gym|
+F007|Name|Gym
+F008|a|b|c|d
+f009|Lower id|gym|Recreation
+F010|Room #5|Library|Classroom
+F011|Name|Gym|Rec|

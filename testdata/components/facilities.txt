@@ -1,0 +1,2 @@
+F001|Front Desk|Library|Service
+F002|Equipment Room|Gym|Recreation

@@ -1,0 +1,789 @@
+TEST RESULTS, MILESTONE 1
+=========================
+
+Build:  g++ -std=c++11 -Wall -Iinclude -o campus $(ls src/*.cpp | grep -v test.cpp)
+Run:    ./campus [data directory]   (default is data/)
+Every "Input" below is the data directory plus the menu keys typed, one per line.
+Expected results come from the assignment rules. Actual results are the real program output
+(menu text removed to keep this readable).
+
+Summary: 32 of 33 tests passed.
+
+Test 1 [File loading]
+Description: Sample files load with correct load summaries (default data/ directory)
+Input: data directory = data/ (default) ; menu keys = 0
+Expected: All four summaries: buildings 7/0, connections 6/0, facilities 10/0 (with capacity, entries, collisions), departments 7/0.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Goodbye.
+Result: PASS
+
+Test 2 [File loading]
+Description: buildings.txt with a comment, blank line, indented comment, and a duplicate name that differs only by capitalization (library)
+Input: data directory = testdata/bad_records ; menu keys = 0
+Expected: Line 5 rejected as a duplicate building; 5 accepted, 1 rejected. Blank and comment lines are skipped silently.
+Actual:
+    Loading data from 'testdata/bad_records'...
+    WARNING: testdata/bad_records/buildings.txt line 5: Duplicate building name
+    Load Summary: testdata/bad_records/buildings.txt | Accepted: 5 | Rejected: 1
+    WARNING: testdata/bad_records/connections.txt line 2: Duplicate connection
+    WARNING: testdata/bad_records/connections.txt line 4: Self-connections are not allowed
+    WARNING: testdata/bad_records/connections.txt line 5: Building does not exist
+    WARNING: testdata/bad_records/connections.txt line 6: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 9: Empty building name
+    Load Summary: testdata/bad_records/connections.txt | Accepted: 3 | Rejected: 6
+    WARNING: testdata/bad_records/facilities.txt line 2: Duplicate facility ID F001
+    WARNING: testdata/bad_records/facilities.txt line 4: Building does not exist
+    WARNING: testdata/bad_records/facilities.txt line 5: Invlaid facility ID
+    WARNING: testdata/bad_records/facilities.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 8: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 9: Incorrect number of fields
+    Load Summary: testdata/bad_records/facilities.txt | Accepted: 6 | Rejected: 6 | Capacity: 11 | Entries: 6 | Collisions: 2
+    WARNING: testdata/bad_records/departments.txt line 3: duplicate department name 'college of science'
+    WARNING: testdata/bad_records/departments.txt line 4: unknown parent 'Nowhere' (must appear on an earlier line)
+    WARNING: testdata/bad_records/departments.txt line 5: expected 2 fields but found 1
+    WARNING: testdata/bad_records/departments.txt line 6: only the root may use parent NONE
+    Load Summary: testdata/bad_records/departments.txt | Accepted: 3 | Rejected: 4
+    Goodbye.
+Result: PASS
+
+Test 3 [File loading]
+Description: connections.txt with a reversed duplicate, self-connection, unknown building, too few fields, too many fields, and an empty field; also a valid line with extra spaces and a lowercase building name
+Input: data directory = testdata/bad_records ; menu keys = 0
+Expected: Lines 2, 4, 5, 6, 7 and 9 rejected, each with filename, line number and reason; 3 accepted, 6 rejected.
+Actual:
+    Loading data from 'testdata/bad_records'...
+    WARNING: testdata/bad_records/buildings.txt line 5: Duplicate building name
+    Load Summary: testdata/bad_records/buildings.txt | Accepted: 5 | Rejected: 1
+    WARNING: testdata/bad_records/connections.txt line 2: Duplicate connection
+    WARNING: testdata/bad_records/connections.txt line 4: Self-connections are not allowed
+    WARNING: testdata/bad_records/connections.txt line 5: Building does not exist
+    WARNING: testdata/bad_records/connections.txt line 6: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 9: Empty building name
+    Load Summary: testdata/bad_records/connections.txt | Accepted: 3 | Rejected: 6
+    WARNING: testdata/bad_records/facilities.txt line 2: Duplicate facility ID F001
+    WARNING: testdata/bad_records/facilities.txt line 4: Building does not exist
+    WARNING: testdata/bad_records/facilities.txt line 5: Invlaid facility ID
+    WARNING: testdata/bad_records/facilities.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 8: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 9: Incorrect number of fields
+    Load Summary: testdata/bad_records/facilities.txt | Accepted: 6 | Rejected: 6 | Capacity: 11 | Entries: 6 | Collisions: 2
+    WARNING: testdata/bad_records/departments.txt line 3: duplicate department name 'college of science'
+    WARNING: testdata/bad_records/departments.txt line 4: unknown parent 'Nowhere' (must appear on an earlier line)
+    WARNING: testdata/bad_records/departments.txt line 5: expected 2 fields but found 1
+    WARNING: testdata/bad_records/departments.txt line 6: only the root may use parent NONE
+    Load Summary: testdata/bad_records/departments.txt | Accepted: 3 | Rejected: 4
+    Goodbye.
+Result: PASS
+
+Test 4 [File loading]
+Description: facilities.txt with a duplicate ID that differs by capitalization (f001), unknown building, invalid ID (004), empty name, too few fields, too many fields, and a trailing extra delimiter
+Input: data directory = testdata/bad_records ; menu keys = 0
+Expected: Lines 2, 4, 5, 6, 7, 8, 9 and 12 rejected with filename, line number and reason. Accepted: F001, F002, F009, F010 (4 accepted, 8 rejected).
+Actual:
+    Loading data from 'testdata/bad_records'...
+    WARNING: testdata/bad_records/buildings.txt line 5: Duplicate building name
+    Load Summary: testdata/bad_records/buildings.txt | Accepted: 5 | Rejected: 1
+    WARNING: testdata/bad_records/connections.txt line 2: Duplicate connection
+    WARNING: testdata/bad_records/connections.txt line 4: Self-connections are not allowed
+    WARNING: testdata/bad_records/connections.txt line 5: Building does not exist
+    WARNING: testdata/bad_records/connections.txt line 6: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 9: Empty building name
+    Load Summary: testdata/bad_records/connections.txt | Accepted: 3 | Rejected: 6
+    WARNING: testdata/bad_records/facilities.txt line 2: Duplicate facility ID F001
+    WARNING: testdata/bad_records/facilities.txt line 4: Building does not exist
+    WARNING: testdata/bad_records/facilities.txt line 5: Invlaid facility ID
+    WARNING: testdata/bad_records/facilities.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 8: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 9: Incorrect number of fields
+    Load Summary: testdata/bad_records/facilities.txt | Accepted: 6 | Rejected: 6 | Capacity: 11 | Entries: 6 | Collisions: 2
+    WARNING: testdata/bad_records/departments.txt line 3: duplicate department name 'college of science'
+    WARNING: testdata/bad_records/departments.txt line 4: unknown parent 'Nowhere' (must appear on an earlier line)
+    WARNING: testdata/bad_records/departments.txt line 5: expected 2 fields but found 1
+    WARNING: testdata/bad_records/departments.txt line 6: only the root may use parent NONE
+    Load Summary: testdata/bad_records/departments.txt | Accepted: 3 | Rejected: 4
+    Goodbye.
+Result: FAIL
+
+Test 5 [File loading]
+Description: Lowercase ID in a data file (f009) and a # inside a name (Room #5) are accepted; ID is stored uppercase and the building spelling comes from buildings.txt
+Input: data directory = testdata/bad_records ; menu keys = 1 0
+Expected: Facility F009 is shown in uppercase, building shown as Gym (not gym), and "Room #5" loads as a normal name.
+Actual:
+    Loading data from 'testdata/bad_records'...
+    WARNING: testdata/bad_records/buildings.txt line 5: Duplicate building name
+    Load Summary: testdata/bad_records/buildings.txt | Accepted: 5 | Rejected: 1
+    WARNING: testdata/bad_records/connections.txt line 2: Duplicate connection
+    WARNING: testdata/bad_records/connections.txt line 4: Self-connections are not allowed
+    WARNING: testdata/bad_records/connections.txt line 5: Building does not exist
+    WARNING: testdata/bad_records/connections.txt line 6: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 9: Empty building name
+    Load Summary: testdata/bad_records/connections.txt | Accepted: 3 | Rejected: 6
+    WARNING: testdata/bad_records/facilities.txt line 2: Duplicate facility ID F001
+    WARNING: testdata/bad_records/facilities.txt line 4: Building does not exist
+    WARNING: testdata/bad_records/facilities.txt line 5: Invlaid facility ID
+    WARNING: testdata/bad_records/facilities.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 8: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 9: Incorrect number of fields
+    Load Summary: testdata/bad_records/facilities.txt | Accepted: 6 | Rejected: 6 | Capacity: 11 | Entries: 6 | Collisions: 2
+    WARNING: testdata/bad_records/departments.txt line 3: duplicate department name 'college of science'
+    WARNING: testdata/bad_records/departments.txt line 4: unknown parent 'Nowhere' (must appear on an earlier line)
+    WARNING: testdata/bad_records/departments.txt line 5: expected 2 fields but found 1
+    WARNING: testdata/bad_records/departments.txt line 6: only the root may use parent NONE
+    Load Summary: testdata/bad_records/departments.txt | Accepted: 3 | Rejected: 4
+    ========== FACILITIES DATABASE ==========
+    Facility ID: F001
+    Facility Name: Main Reading Room
+    Building: Library
+    Category: Library
+    -----------------------------
+    Facility ID: F002
+    Facility Name: Lab
+    Building: Science Building
+    Category: Computer Lab
+    -----------------------------
+    Facility ID: F005
+    Facility Name:
+    Building: Gym
+    Category: Rec
+    -----------------------------
+    Facility ID: F009
+    Facility Name: Lower id
+    Building: Gym
+    Category: Recreation
+    -----------------------------
+    Facility ID: F010
+    Facility Name: Room #5
+    Building: Library
+    Category: Classroom
+    -----------------------------
+    Facility ID: F011
+    Facility Name: Name
+    Building: Gym
+    Category: Rec
+    -----------------------------
+    Total Facilities: 6
+    Goodbye.
+Result: PASS
+
+Test 6 [File loading]
+Description: departments.txt with a duplicate name that differs by capitalization, unknown parent, one-field line, a second NONE parent, and a valid line with extra spaces
+Input: data directory = testdata/bad_records ; menu keys = 0
+Expected: Lines 3, 4, 5 and 6 rejected with reasons; 3 accepted (University, College of Science, Biology), 4 rejected.
+Actual:
+    Loading data from 'testdata/bad_records'...
+    WARNING: testdata/bad_records/buildings.txt line 5: Duplicate building name
+    Load Summary: testdata/bad_records/buildings.txt | Accepted: 5 | Rejected: 1
+    WARNING: testdata/bad_records/connections.txt line 2: Duplicate connection
+    WARNING: testdata/bad_records/connections.txt line 4: Self-connections are not allowed
+    WARNING: testdata/bad_records/connections.txt line 5: Building does not exist
+    WARNING: testdata/bad_records/connections.txt line 6: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/connections.txt line 9: Empty building name
+    Load Summary: testdata/bad_records/connections.txt | Accepted: 3 | Rejected: 6
+    WARNING: testdata/bad_records/facilities.txt line 2: Duplicate facility ID F001
+    WARNING: testdata/bad_records/facilities.txt line 4: Building does not exist
+    WARNING: testdata/bad_records/facilities.txt line 5: Invlaid facility ID
+    WARNING: testdata/bad_records/facilities.txt line 7: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 8: Incorrect number of fields
+    WARNING: testdata/bad_records/facilities.txt line 9: Incorrect number of fields
+    Load Summary: testdata/bad_records/facilities.txt | Accepted: 6 | Rejected: 6 | Capacity: 11 | Entries: 6 | Collisions: 2
+    WARNING: testdata/bad_records/departments.txt line 3: duplicate department name 'college of science'
+    WARNING: testdata/bad_records/departments.txt line 4: unknown parent 'Nowhere' (must appear on an earlier line)
+    WARNING: testdata/bad_records/departments.txt line 5: expected 2 fields but found 1
+    WARNING: testdata/bad_records/departments.txt line 6: only the root may use parent NONE
+    Load Summary: testdata/bad_records/departments.txt | Accepted: 3 | Rejected: 4
+    Goodbye.
+Result: PASS
+
+Test 7 [File loading]
+Description: A missing file (facilities.txt is not in the directory); program keeps going and treats it as empty
+Input: data directory = testdata/missing_facilities ; menu keys = 1 0
+Expected: An error naming the missing file, a 0/0 summary, then the menu still works ("No facilities") and exits cleanly.
+Actual:
+    Loading data from 'testdata/missing_facilities'...
+    Load Summary: testdata/missing_facilities/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: testdata/missing_facilities/connections.txt | Accepted: 6 | Rejected: 0
+    ERROR: Could not open file: testdata/missing_facilities/facilities.txt
+    Load Summary: testdata/missing_facilities/facilities.txt | Accepted: 0 | Rejected: 0 | Capacity: 11 | Entries: 0 | Collisions: 0
+    Load Summary: testdata/missing_facilities/departments.txt | Accepted: 7 | Rejected: 0
+    ========== FACILITIES DATABASE ==========
+    No facilities are currently loaded
+    Goodbye.
+Result: PASS
+
+Test 8 [File loading]
+Description: Sample data saved with Windows line endings (\r\n)
+Input: data directory = testdata/windows_endings ; menu keys = 0
+Expected: Loads exactly like the unix files: 7/0, 6/0, 10/0 and 7/0 with no rejected lines.
+Actual:
+    Loading data from 'testdata/windows_endings'...
+    Load Summary: testdata/windows_endings/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: testdata/windows_endings/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: testdata/windows_endings/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: testdata/windows_endings/departments.txt | Accepted: 7 | Rejected: 0
+    Goodbye.
+Result: PASS
+
+Test 9 [File loading]
+Description: All four files empty; every view option run on empty data
+Input: data directory = testdata/empty_files ; menu keys = 1 3 4 8 9 0
+Expected: 0/0 summaries and clear empty-state messages with no crash, then clean exit.
+Actual:
+    Loading data from 'testdata/empty_files'...
+    Load Summary: testdata/empty_files/buildings.txt | Accepted: 0 | Rejected: 0
+    Load Summary: testdata/empty_files/connections.txt | Accepted: 0 | Rejected: 0
+    Load Summary: testdata/empty_files/facilities.txt | Accepted: 0 | Rejected: 0 | Capacity: 11 | Entries: 0 | Collisions: 0
+    Load Summary: testdata/empty_files/departments.txt | Accepted: 0 | Rejected: 0
+    ========== FACILITIES DATABASE ==========
+    No facilities are currently loaded
+    ========== CAMPUS GRAPH ==========
+    No buildings are currently loaded.
+    ========== GRAPH STATISTICS ==========
+    Total Buildings: 0
+    Total Connections: 0
+    Building Degrees:
+    No departments are loaded.
+    No departments are loaded.
+    Goodbye.
+Result: PASS
+
+Test 10 [Hash table and ID search]
+Description: ID search: F004 (found)
+Input: data directory = data/ (default) ; menu keys = 2 F004 0
+Expected: Facility Found, showing Computer Lab A | Science Building | Computer Lab.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility Found
+    Facility ID: F004
+    Facility Name: Computer Lab A
+    Building: Science Building
+    Category: Computer Lab
+    -----------------------------
+    Goodbye.
+Result: PASS
+
+Test 11 [Hash table and ID search]
+Description: ID search: f004 (lowercase, normalized to F004)
+Input: data directory = data/ (default) ; menu keys = 2 f004 0
+Expected: Same result as F004.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility Found
+    Facility ID: F004
+    Facility Name: Computer Lab A
+    Building: Science Building
+    Category: Computer Lab
+    -----------------------------
+    Goodbye.
+Result: PASS
+
+Test 12 [Hash table and ID search]
+Description: ID search: 004 (invalid format)
+Input: data directory = data/ (default) ; menu keys = 2 004 0
+Expected: Invalid format message: an ID is F followed by exactly three digits.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Invalid facility ID format
+    Expected format: F followed by 3 digits
+    Goodbye.
+Result: PASS
+
+Test 13 [Hash table and ID search]
+Description: ID search: F999 (valid but not found)
+Input: data directory = data/ (default) ; menu keys = 2 F999 0
+Expected: Not found message that shows the ID F999.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility F999 was not found
+    Goodbye.
+Result: PASS
+
+Test 14 [Hash table and ID search]
+Description: ID search: f999 (lowercase, not found shows the normalized ID)
+Input: data directory = data/ (default) ; menu keys = 2 f999 0
+Expected: Not found message shows F999 in uppercase.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility F999 was not found
+    Goodbye.
+Result: PASS
+
+Test 15 [Hash table and ID search]
+Description: Hash collision using our own test data: F001, F010 and f100 all hash to the same bucket (capacity 11); a duplicate F001 is also attempted
+Input: data directory = testdata/collision ; menu keys = 0
+Expected: Entries 3, collisions 2 (each insert into an already used bucket counts once). The duplicate F001 is rejected and does NOT add to the collision count.
+Actual:
+    Loading data from 'testdata/collision'...
+    Load Summary: testdata/collision/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: testdata/collision/connections.txt | Accepted: 6 | Rejected: 0
+    WARNING: testdata/collision/facilities.txt line 5: Duplicate facility ID F001
+    Load Summary: testdata/collision/facilities.txt | Accepted: 3 | Rejected: 1 | Capacity: 11 | Entries: 3 | Collisions: 2
+    Load Summary: testdata/collision/departments.txt | Accepted: 7 | Rejected: 0
+    Goodbye.
+Result: PASS
+
+Test 16 [Hash table and ID search]
+Description: Lookup still works for keys that share a bucket (search f100 after the collision test data is loaded)
+Input: data directory = testdata/collision ; menu keys = 2 f100 2 F010 0
+Expected: Both F100 and F010 are found even though they share a bucket with F001.
+Actual:
+    Loading data from 'testdata/collision'...
+    Load Summary: testdata/collision/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: testdata/collision/connections.txt | Accepted: 6 | Rejected: 0
+    WARNING: testdata/collision/facilities.txt line 5: Duplicate facility ID F001
+    Load Summary: testdata/collision/facilities.txt | Accepted: 3 | Rejected: 1 | Capacity: 11 | Entries: 3 | Collisions: 2
+    Load Summary: testdata/collision/departments.txt | Accepted: 7 | Rejected: 0
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility Found
+    Facility ID: F100
+    Facility Name: Help Desk
+    Building: Library
+    Category: Service
+    -----------------------------
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility Found
+    Facility ID: F010
+    Facility Name: Info Desk
+    Building: Library
+    Category: Service
+    -----------------------------
+    Goodbye.
+Result: PASS
+
+Test 17 [Graph and BFS]
+Description: BFS from a connected building (Library) on the sample data
+Input: data directory = data/ (default) ; menu keys = 5 Library 0
+Expected: Visit order Library 0, Student Union 1, Business Building 1, Science Building 2, Gym 2, Engineering Building 3; Reachable 6 of 7.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Library
+    Reachable Buildings:
+    Library (Distance: 0)
+    Student Union (Distance: 1)
+    Business Building (Distance: 1)
+    Science Building (Distance: 2)
+    Gym (Distance: 2)
+    Engineering Building (Distance: 3)
+    Reachable Count: 6 out of 7
+    Goodbye.
+Result: PASS
+
+Test 18 [Graph and BFS]
+Description: BFS from an isolated building (Observatory)
+Input: data directory = data/ (default) ; menu keys = 5 Observatory 0
+Expected: Only Observatory at distance 0; Reachable 1 of 7.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Observatory
+    Reachable Buildings:
+    Observatory (Distance: 0)
+    Reachable Count: 1 out of 7
+    Goodbye.
+Result: PASS
+
+Test 19 [Graph and BFS]
+Description: BFS with an unknown start building (Nowhere), then the menu still works
+Input: data directory = data/ (default) ; menu keys = 5 Nowhere 0
+Expected: Error naming the unknown building, then back to the menu and clean exit.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    ERROR: Building not found: Nowhere
+    Goodbye.
+Result: PASS
+
+Test 20 [Graph and BFS]
+Description: Graph with multiple connected components (testdata/components: Library-Gym, Lab-Cafe, and isolated Shed); BFS from one building in each
+Input: data directory = testdata/components ; menu keys = 5 Library 5 Lab 5 Shed 0
+Expected: Each BFS only reaches its own component: 2 of 5, 2 of 5, then 1 of 5.
+Actual:
+    Loading data from 'testdata/components'...
+    Load Summary: testdata/components/buildings.txt | Accepted: 5 | Rejected: 0
+    Load Summary: testdata/components/connections.txt | Accepted: 2 | Rejected: 0
+    Load Summary: testdata/components/facilities.txt | Accepted: 2 | Rejected: 0 | Capacity: 11 | Entries: 2 | Collisions: 0
+    Load Summary: testdata/components/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Library
+    Reachable Buildings:
+    Library (Distance: 0)
+    Gym (Distance: 1)
+    Reachable Count: 2 out of 5
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Lab
+    Reachable Buildings:
+    Lab (Distance: 0)
+    Cafe (Distance: 1)
+    Reachable Count: 2 out of 5
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Shed
+    Reachable Buildings:
+    Shed (Distance: 0)
+    Reachable Count: 1 out of 5
+    Goodbye.
+Result: PASS
+
+Test 21 [Graph and BFS]
+Description: View campus graph on the sample data (insertion order, neighbor order, isolated building)
+Input: data directory = data/ (default) ; menu keys = 3 0
+Expected: Buildings in file order, neighbors in connection order, Observatory shows (no connections).
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    ========== CAMPUS GRAPH ==========
+    Library: Student Union, Business Building
+    Student Union: Library, Science Building, Gym
+    Science Building: Student Union, Engineering Building
+    Engineering Building: Science Building
+    Business Building: Library, Gym
+    Gym: Student Union, Business Building
+    Observatory: (no connections)
+    Goodbye.
+Result: PASS
+
+Test 22 [Graph and BFS]
+Description: Graph counts and degrees on the sample data
+Input: data directory = data/ (default) ; menu keys = 4 0
+Expected: Total buildings 7, total connections 6 (counted once); degrees 2, 3, 2, 1, 2, 2, 0.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    ========== GRAPH STATISTICS ==========
+    Total Buildings: 7
+    Total Connections: 6
+    Building Degrees:
+    Library: 2
+    Student Union: 3
+    Science Building: 2
+    Engineering Building: 1
+    Business Building: 2
+    Gym: 2
+    Observatory: 0
+    Goodbye.
+Result: PASS
+
+Test 23 [Graph and BFS]
+Description: Building names typed by the user: lowercase, extra outer spaces, and two internal spaces
+Input: data directory = data/ (default) ; menu keys = 5 library 5 '  STUDENT UNION  ' 5 Student  Union 0
+Expected: Lowercase and outer spaces match; two internal spaces do not match (unknown building).
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Library
+    Reachable Buildings:
+    Library (Distance: 0)
+    Student Union (Distance: 1)
+    Business Building (Distance: 1)
+    Science Building (Distance: 2)
+    Gym (Distance: 2)
+    Engineering Building (Distance: 3)
+    Reachable Count: 6 out of 7
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Student Union
+    Reachable Buildings:
+    Student Union (Distance: 0)
+    Library (Distance: 1)
+    Science Building (Distance: 1)
+    Gym (Distance: 1)
+    Business Building (Distance: 2)
+    Engineering Building (Distance: 2)
+    Reachable Count: 6 out of 7
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    ERROR: Building not found: Student  Union
+    Goodbye.
+Result: PASS
+
+Test 24 [Department tree]
+Description: Empty tree: add the first department (no parent prompt), then show hierarchy and preorder
+Input: data directory = testdata/empty_files ; menu keys = 6 University 8 9 0
+Expected: First department becomes the root without asking for a parent; hierarchy and preorder show just that department.
+Actual:
+    Loading data from 'testdata/empty_files'...
+    Load Summary: testdata/empty_files/buildings.txt | Accepted: 0 | Rejected: 0
+    Load Summary: testdata/empty_files/connections.txt | Accepted: 0 | Rejected: 0
+    Load Summary: testdata/empty_files/facilities.txt | Accepted: 0 | Rejected: 0 | Capacity: 11 | Entries: 0 | Collisions: 0
+    Load Summary: testdata/empty_files/departments.txt | Accepted: 0 | Rejected: 0
+    Enter new department name: The tree is empty, so 'University' will become the root.
+    Added department: University
+    University
+    Preorder: University
+    Goodbye.
+Result: PASS
+
+Test 25 [Department tree]
+Description: Root-only tree: search for the root, then hierarchy and preorder
+Input: data directory = testdata/root_only ; menu keys = 7 university 8 9 0
+Expected: Root found with parent None, 0 children, depth 0; hierarchy and preorder show one department.
+Actual:
+    Loading data from 'testdata/root_only'...
+    Load Summary: testdata/root_only/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: testdata/root_only/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: testdata/root_only/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: testdata/root_only/departments.txt | Accepted: 1 | Rejected: 0
+    Enter department name to search: Department: University
+    Parent: None
+    Direct children: 0
+    Depth: 0
+    University
+    Preorder: University
+    Goodbye.
+Result: PASS
+
+Test 26 [Department tree]
+Description: Search the root, a non-root (any capitalization), and a missing department on the sample tree
+Input: data directory = data/ (default) ; menu keys = 7 University 7 PHYSICS 7 Biology 0
+Expected: Root: parent None, 2 children, depth 0. Physics: parent College of Science, 0 children, depth 2. Biology: not found.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter department name to search: Department: University
+    Parent: None
+    Direct children: 2
+    Depth: 0
+    Enter department name to search: Department: Physics
+    Parent: College of Science
+    Direct children: 0
+    Depth: 2
+    Enter department name to search: Department not found: Biology
+    Goodbye.
+Result: PASS
+
+Test 27 [Department tree]
+Description: Add a department with an unknown parent; tree stays unchanged
+Input: data directory = data/ (default) ; menu keys = 6 Law Nowhere 8 0
+Expected: Error naming the unknown parent; Law does not appear in the hierarchy.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter new department name: Enter parent department name: Error: could not add department: unknown parent 'Nowhere'
+    University
+        College of Engineering
+            Computer Science
+            Electrical Engineering
+        College of Science
+            Mathematics
+            Physics
+    Goodbye.
+Result: PASS
+
+Test 28 [Department tree]
+Description: Add a duplicate department name (different capitalization); tree stays unchanged
+Input: data directory = data/ (default) ; menu keys = 6 physics University 0
+Expected: Error saying the name is a duplicate; nothing is added.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter new department name: Enter parent department name: Error: could not add department: duplicate department name 'physics'
+    Goodbye.
+Result: PASS
+
+Test 29 [Department tree]
+Description: Add a valid department, then run the hierarchy display and preorder traversal
+Input: data directory = data/ (default) ; menu keys = 6 Biology College of Science 8 9 0
+Expected: Biology added under College of Science (indented four spaces per depth); preorder ends with Physics, Biology.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter new department name: Enter parent department name: Added department: Biology
+    University
+        College of Engineering
+            Computer Science
+            Electrical Engineering
+        College of Science
+            Mathematics
+            Physics
+            Biology
+    Preorder: University, College of Engineering, Computer Science, Electrical Engineering, College of Science, Mathematics, Physics, Biology
+    Goodbye.
+Result: PASS
+
+Test 30 [Menu and input]
+Description: Invalid menu input: text, blank line, out-of-range number, negative number; then a valid option
+Input: data directory = data/ (default) ; menu keys = abc '' 99 -1 3 0
+Expected: Each bad entry prints an error and returns to the menu (no crash, no loop); option 3 still works afterward.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Error: 'abc' is not a valid number. Enter a number from the menu.
+    Error: please enter a number from the menu.
+    Error: 99 is not on the menu. Enter a number from 0 to 9.
+    Error: '-1' is not a valid number. Enter a number from the menu.
+    ========== CAMPUS GRAPH ==========
+    Library: Student Union, Business Building
+    Student Union: Library, Science Building, Gym
+    Science Building: Student Union, Engineering Building
+    Engineering Building: Science Building
+    Business Building: Library, Gym
+    Gym: Student Union, Business Building
+    Observatory: (no connections)
+    Goodbye.
+Result: PASS
+
+Test 31 [Menu and input]
+Description: Names that contain spaces: BFS from "Student Union" and add department "College of Arts and Letters" under "University"
+Input: data directory = data/ (default) ; menu keys = 5 Student Union 6 College of Arts and Letters University 0
+Expected: Both names are read in full (spaces kept).
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Student Union
+    Reachable Buildings:
+    Student Union (Distance: 0)
+    Library (Distance: 1)
+    Science Building (Distance: 1)
+    Gym (Distance: 1)
+    Business Building (Distance: 2)
+    Engineering Building (Distance: 2)
+    Reachable Count: 6 out of 7
+    Enter new department name: Enter parent department name: Added department: College of Arts and Letters
+    Goodbye.
+Result: PASS
+
+Test 32 [Menu and input]
+Description: Blank names at the BFS, add department (name and parent) and search department prompts
+Input: data directory = data/ (default) ; menu keys = 5 '' 6 '' 6 Law '' 7 '' 0
+Expected: Each blank name prints an error and returns to the menu.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building: Error: building name cannot be blank.
+    Enter new department name: Error: department name cannot be blank.
+    Enter new department name: Enter parent department name: Error: parent name cannot be blank.
+    Enter department name to search: Error: department name cannot be blank.
+    Goodbye.
+Result: PASS
+
+Test 33 [Menu and input]
+Description: Repeated operations after errors: bad building, good building, bad ID, good ID
+Input: data directory = data/ (default) ; menu keys = 5 Nowhere 5 Library 2 004 2 F004 0
+Expected: Errors do not stop later operations; the good building and good ID still work.
+Actual:
+    Loading data from 'data'...
+    Load Summary: data/buildings.txt | Accepted: 7 | Rejected: 0
+    Load Summary: data/connections.txt | Accepted: 6 | Rejected: 0
+    Load Summary: data/facilities.txt | Accepted: 10 | Rejected: 0 | Capacity: 11 | Entries: 10 | Collisions: 1
+    Load Summary: data/departments.txt | Accepted: 7 | Rejected: 0
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    ERROR: Building not found: Nowhere
+    Enter starting building:
+    ========== BFS REACHABILITY ==========
+    Starting Building: Library
+    Reachable Buildings:
+    Library (Distance: 0)
+    Student Union (Distance: 1)
+    Business Building (Distance: 1)
+    Science Building (Distance: 2)
+    Gym (Distance: 2)
+    Engineering Building (Distance: 3)
+    Reachable Count: 6 out of 7
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Invalid facility ID format
+    Expected format: F followed by 3 digits
+    Enter facility ID:
+    ========== FACILITY SEARCH ==========
+    Facility Found
+    Facility ID: F004
+    Facility Name: Computer Lab A
+    Building: Science Building
+    Category: Computer Lab
+    -----------------------------
+    Goodbye.
+Result: PASS
